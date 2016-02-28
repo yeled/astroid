@@ -40,7 +40,8 @@ namespace Astroid {
       sort = NOTMUCH_SORT_NEWEST_FIRST;
     }
 
-    thread_load_step = astroid->config ().get<int> ("thread_index.thread_load_step");
+    /* thread_load_step = astroid->config ().get<int> ("thread_index.thread_load_step"); */
+    thread_load_step = 10; // TODO: for testing
 
     /* set up treeview */
     list_store = Glib::RefPtr<ThreadIndexListStore>(new ThreadIndexListStore ());
@@ -309,9 +310,9 @@ namespace Astroid {
     {
       /* we should not need to actually load the thread to move
        * the iterator: this part is quite slow. */
-      notmuch_thread_t  * thread;
-      thread = notmuch_threads_get (threads);
-      notmuch_thread_destroy (thread);
+      /* notmuch_thread_t  * thread; */
+      /* thread = notmuch_threads_get (threads); */
+      /* notmuch_thread_destroy (thread); */
       i++;
     }
 
