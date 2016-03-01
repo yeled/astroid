@@ -90,12 +90,10 @@ namespace Astroid {
     /* close current page */
     using std::endl;
     if (main_window->notebook.get_n_pages() > 1) {
-      int c = main_window->notebook.get_current_page ();
-
-      if (((Mode*) main_window->notebook.get_nth_page (c))->invincible && !force) {
+      if (invincible && !force) {
         log << debug << "mode: mode invincible, not closing." << endl;
       } else {
-        main_window->del_mode (c);
+        main_window->del_mode (*this);
       }
     } else {
       /* if there are more windows, close this one */

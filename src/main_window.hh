@@ -58,6 +58,7 @@ namespace Astroid {
 
       void add_mode (Mode *);
       void del_mode (int);
+      void del_mode (Gtk::Widget &);
       void remove_all_modes ();
       void close_page (bool = false);
       void close_page (Mode *, bool = false);

@@ -377,16 +377,21 @@ namespace Astroid {
 
   void MainWindow::del_mode (int c) {
     // log << debug << "mw: del mode: " << c << endl;
-    if (c >= 0) {
-      if (c == 0) {
-        set_active (c + 1);
-      } else {
-        set_active (c - 1);
-      }
-
-      notebook.remove_page (c); // this should free the widget (?)
+    if (c == 0) {
+      set_active (c + 1);
     } else {
-      log << warn << "mw: attempt to remove negative page" << endl;
+      set_active (c - 1);
+    }
+
+    notebook.remove_page (c); // this should free the widget (?)
+  }
+
+  void MainWindow::del_mode (Gtk::Widget &w) {
+    // log << debug << "mw: del mode: " << c << endl;
+    notebook.remove_page (w); // this should free the widget (?)
+
+    if (notebook.get_n_pages () > 0) {
+      set_active (notebook.get_current_page ());
     }
   }
 
