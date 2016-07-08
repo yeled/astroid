@@ -271,7 +271,7 @@ namespace Astroid {
 
     Keybindings * keys = &(thread_index->keys);
 
-    keys->register_key ("j", { Key(false, false, (guint) GDK_KEY_Down) },
+    keys->register_key ("j", { Key(false, false, false, (guint) GDK_KEY_Down) },
         "thread_index.next_thread", "Next thread",
         [&](Key) {
           if (list_store->children().size() < 2)
@@ -342,7 +342,7 @@ namespace Astroid {
           return true;
         });
 
-    keys->register_key (Key (false, false, (guint) GDK_KEY_ISO_Left_Tab),
+    keys->register_key (Key (false, false, false, (guint) GDK_KEY_ISO_Left_Tab),
         "thread_index.previous_unread",
         "Jump to previous unread thread",
         [&] (Key) {
@@ -395,7 +395,7 @@ namespace Astroid {
           return true;
         });
 
-    keys->register_key ("k", { Key(false, false, (guint) GDK_KEY_Up) },
+    keys->register_key ("k", { Key(false, false, false, (guint) GDK_KEY_Up) },
         "thread_index.prev_thread", "Previous thread",
         [&](Key) {
             Gtk::TreePath path;
@@ -561,8 +561,8 @@ namespace Astroid {
           return true;
         });
 
-    keys->register_key (Key (false, true, (guint) GDK_KEY_Return),
-        { Key (false, true, (guint) GDK_KEY_KP_Enter) },
+    keys->register_key (Key (false, true, false, (guint) GDK_KEY_Return),
+        { Key (false, true, false, (guint) GDK_KEY_KP_Enter) },
         "thread_index.open_paned",
         "Open thread in pane",
         [&] (Key) {
@@ -575,8 +575,8 @@ namespace Astroid {
           return true;
         });
 
-    keys->register_key (Key (true, false, (guint) GDK_KEY_Return),
-        { Key (true, false, (guint) GDK_KEY_KP_Enter) },
+    keys->register_key (Key (true, false, false, (guint) GDK_KEY_Return),
+        { Key (true, false, false, (guint) GDK_KEY_KP_Enter) },
         "thread_index.open_new_window",
         "Open thread in new window",
         [&] (Key) {

@@ -2145,7 +2145,7 @@ namespace Astroid {
           return true;
         });
 
-    keys.register_key ("C-d", { Key (true, false, (guint) GDK_KEY_Down), Key (GDK_KEY_Page_Down) },
+    keys.register_key ("C-d", { Key (true, false, false, (guint) GDK_KEY_Down), Key (GDK_KEY_Page_Down) },
         "thread_view.page_down",
         "Page down",
         [&] (Key) {
@@ -2184,7 +2184,7 @@ namespace Astroid {
           return true;
         });
 
-    keys.register_key ("C-u", { Key (true, false, (guint) GDK_KEY_Up), Key (GDK_KEY_Page_Up) },
+    keys.register_key ("C-u", { Key (true, false, false, (guint) GDK_KEY_Up), Key (GDK_KEY_Page_Up) },
         "thread_view.page_up",
         "Page up",
         [&] (Key) {

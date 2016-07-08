@@ -22,7 +22,7 @@ namespace Astroid {
     /* register keys */
     keys.register_key ("j",
         { Key("C-j"),
-          Key (true, false, (guint) GDK_KEY_Down),
+          Key (true, false, false, (guint) GDK_KEY_Down),
           Key(GDK_KEY_Down) },
         "help.down",
         "Scroll down",
@@ -40,7 +40,7 @@ namespace Astroid {
 
     keys.register_key ("k",
         { Key ("C-k"),
-          Key (true, false, (guint) GDK_KEY_Up),
+          Key (true, false, false, (guint) GDK_KEY_Up),
           Key (GDK_KEY_Up) },
         "help.up",
         "Scroll up",

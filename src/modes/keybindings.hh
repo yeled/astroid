@@ -12,8 +12,8 @@ namespace Astroid {
     Key ();
     Key (ustring spec, ustring name = "", ustring help = "");
     Key (guint, ustring name = "", ustring help = "");
-    Key (bool _c, bool _m, guint k, ustring name = "", ustring help = "");
-    Key (bool _c, bool _m, char k, ustring name = "", ustring help = "");
+    Key (bool _c, bool _m, bool _s, guint k, ustring name = "", ustring help = "");
+    Key (bool _c, bool _m, bool _s, char k, ustring name = "", ustring help = "");
     Key (GdkEventKey *, ustring name = "", ustring help = "");
 
     /* only these three memebers define the logical state of the Key */

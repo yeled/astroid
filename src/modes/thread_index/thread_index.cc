@@ -82,7 +82,7 @@ namespace Astroid {
           return true;
         });
 
-    keys.register_key (Key (false, true, (guint) GDK_KEY_Tab), "thread_index.pane_swap_focus",
+    keys.register_key (Key (false, true, false, (guint) GDK_KEY_Tab), "thread_index.pane_swap_focus",
         "Swap focus to other pane if open",
         [&] (Key) {
           if (packed == 2) {
@@ -141,7 +141,7 @@ namespace Astroid {
           return true;
         });
 
-    keys.register_key ("C-u", { Key (true, false, (guint) GDK_KEY_Up), Key (GDK_KEY_Page_Up) },
+    keys.register_key ("C-u", { Key (true, false, false, (guint) GDK_KEY_Up), Key (GDK_KEY_Page_Up) },
         "thread_index.page_up",
         "Page up",
         [&] (Key) {
@@ -166,7 +166,7 @@ namespace Astroid {
           return true;
         });
 
-    keys.register_key ("C-d", { Key (true, false, (guint) GDK_KEY_Down), Key (GDK_KEY_Page_Down) },
+    keys.register_key ("C-d", { Key (true, false, false, (guint) GDK_KEY_Down), Key (GDK_KEY_Page_Down) },
         "thread_index.page_down",
         "Page down",
         [&] (Key) {
