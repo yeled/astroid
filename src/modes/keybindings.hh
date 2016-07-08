@@ -19,6 +19,7 @@ namespace Astroid {
     /* only these three memebers define the logical state of the Key */
     bool ctrl = false;
     bool meta = false;
+    bool shift = false;
     guint key = 0; /* GDK_KEY_* */
 
     mutable ustring name = "";
