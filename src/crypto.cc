@@ -234,6 +234,127 @@ namespace Astroid {
     return true;
   }
 
+  GMimeMultipart * Crypto::split_inline_pgp (refptr<Glib::ByteArray> content) {
+    /* try to split inline pgp into a multipart with surrounding clear text parts
+     * and a GMimeMultiPartEncrypted  or GMimeMultiPartSigned part */
+
+    if (content->size () == 0) return NULL;
+
+    std::string c = reinterpret_cast<char *> (content->get_data ());
+
+    GMimeMultipart * m = g_mime_multipart_new ();
+
+    size_t b = 0;
+    size_t last_part = 0;
+
+    while (b = c.find ("BEGIN PGP", b), b != std::string::npos) {
+
+      /* is this an encrypted message or a signed message */
+      bool isenc = c.find ("BEGIN PGP MESSAGE", b) == b;
+      bool issig = !isenc && c.find ("BEGIN PGP SIGNED MESSAGE", b) == b;
+
+      if (isenc || issig) {
+        /* add previous part */
+        std::string prt = c.substr (last_part, b - last_part);
+
+        GMimeStream * contentStream = g_mime_stream_mem_new_with_buffer(prt.c_str(), prt.size());
+        GMimePart * messagePart = g_mime_part_new_with_type ("text", "plain");
+
+        /* g_mime_object_set_content_type_parameter ((GMimeObject *) messagePart, "charset", astroid->config().get<string>("editor.charset").c_str()); */
+
+        GMimeDataWrapper * contentWrapper = g_mime_data_wrapper_new_with_stream(contentStream, GMIME_CONTENT_ENCODING_DEFAULT);
+
+        /* g_mime_part_set_content_encoding (messagePart, GMIME_CONTENT_ENCODING_QUOTEDPRINTABLE); */
+        g_mime_part_set_content_object (messagePart, contentWrapper);
+
+        g_mime_multipart_add (m, GMIME_OBJECT (messagePart));
+
+        g_object_unref(messagePart);
+        g_object_unref(contentWrapper);
+        g_object_unref(contentStream);
+
+        last_part = b;
+
+        /* make new part */
+        if (isenc) {
+          /* find end */
+          size_t e = c.find ("END PGP MESSAGE", b);
+          if (e != std::string::npos) {
+
+            std::string prt = "Version: 1.0\n";
+            GMimeMultipart * em = g_mime_multipart_new_with_subtype ("encrypted");
+
+            /* add version stuff */
+            GMimeStream * contentStream = g_mime_stream_mem_new_with_buffer(prt.c_str(), prt.size());
+            GMimePart * messagePart = g_mime_part_new_with_type ("application", "pgp-encrypted");
+
+            /* g_mime_object_set_content_type_parameter ((GMimeObject *) messagePart, "charset", astroid->config().get<string>("editor.charset").c_str()); */
+
+            GMimeDataWrapper * contentWrapper = g_mime_data_wrapper_new_with_stream(contentStream, GMIME_CONTENT_ENCODING_DEFAULT);
+
+            /* g_mime_part_set_content_encoding (messagePart, GMIME_CONTENT_ENCODING_QUOTEDPRINTABLE); */
+            g_mime_part_set_content_object (messagePart, contentWrapper);
+
+            g_mime_multipart_add (em, GMIME_OBJECT (messagePart));
+
+            g_object_unref(messagePart);
+            g_object_unref(contentWrapper);
+            g_object_unref(contentStream);
+
+            /* add content */
+            prt = c.substr (b, e - b);
+            contentStream = g_mime_stream_mem_new_with_buffer(prt.c_str(), prt.size());
+            messagePart = g_mime_part_new_with_type ("application", "octet-stream");
+
+            /* g_mime_object_set_content_type_parameter ((GMimeObject *) messagePart, "charset", astroid->config().get<string>("editor.charset").c_str()); */
+
+            contentWrapper = g_mime_data_wrapper_new_with_stream(contentStream, GMIME_CONTENT_ENCODING_DEFAULT);
+
+            /* g_mime_part_set_content_encoding (messagePart, GMIME_CONTENT_ENCODING_QUOTEDPRINTABLE); */
+            g_mime_part_set_content_object (messagePart, contentWrapper);
+
+            g_mime_multipart_add (em, GMIME_OBJECT (messagePart));
+
+            g_object_unref(messagePart);
+            g_object_unref(contentWrapper);
+            g_object_unref(contentStream);
+
+            g_mime_multipart_add (m, GMIME_OBJECT(em));
+
+            last_part = e;
+            b = e;
+          } else {
+            /* no end, can't parse the message */
+
+            // TODO: unref..
+
+            return NULL;
+          }
+
+        } else if (issig) {
+
+          size_t e = c.find ("END PGP SIGNED MESSAGE", b);
+          if (e != std::string::npos) {
+
+          } else {
+            // broken message structure
+            // TODO: unref..
+
+            return NULL;
+          }
+        }
+
+      } else {
+        /* unknown type, keep going */
+        b++;
+        continue;
+      }
+    }
+
+
+    return m;
+  }
+
   ustring Crypto::get_md5_digest (ustring str) {
     unsigned char * digest = get_md5_digest_char (str);
 

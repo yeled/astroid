@@ -49,6 +49,8 @@ namespace Astroid {
       bool verify_signature_list (GMimeSignatureList *);
 
     public:
+      static GMimeMultipart * split_inline_pgp (refptr<Glib::ByteArray>);
+
       static ustring get_md5_digest (ustring str);
       static unsigned char * get_md5_digest_char (ustring str);
   };
