@@ -34,3 +34,9 @@ test.foo2=2
 test.spec1=Tab
 test.spec2=C-Tab
 
+# Test shift modifier
+
+# these are equivalent
+test.shifter=S-b
+test.shifter2=B
+

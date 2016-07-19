@@ -64,7 +64,7 @@ BOOST_AUTO_TEST_SUITE(TestTestKeybindings)
     /* test run hook */
     ustring test_thread = "001";
 
-    auto f = [&] (Key k, ustring cmd) {
+    auto f = [&] (Key, ustring cmd) {
       Astroid::log << test << "key: run-hook got back: " << cmd << endl;
 
       ustring final_cmd = ustring::compose (cmd, test_thread);
@@ -89,6 +89,20 @@ BOOST_AUTO_TEST_SUITE(TestTestKeybindings)
     Astroid::log << test << "handling key: n" << endl;
     keys.handle (&e);
 
+
+    keys.register_key (UnboundKey(), "test.shifter", "test shifter 1", [&](Key) { return true; });
+
+    BOOST_CHECK_THROW (
+      keys.register_key (UnboundKey(), "test.shifter2", "test shifter 2", [&](Key) { return true; }),
+      duplicatekey_error);
+
+    Key b ("B");
+    e.state = GDK_SHIFT_MASK;
+    e.keyval = b.key;
+    BOOST_CHECK (keys.handle (&e) == true);
+
+    Key quote ("\"");
+    BOOST_CHECK (quote.shift != true);
 
     teardown ();
   }

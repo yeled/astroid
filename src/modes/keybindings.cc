@@ -13,6 +13,15 @@ using std::function;
 using std::vector;
 using std::endl;
 
+# define isshift(x) (isalpha(x) && isupper(x))
+# define isshift_g(x) (isalpha(gdk_keyval_to_unicode(x)) && gdk_keyval_is_upper(x))
+# define tolower_g(x) (isalpha(gdk_keyval_to_unicode(x)) ? gdk_keyval_to_lower (x) : x)
+# define tolower_c(x) (isshift(x) ? tolower (x) : x)
+# define unicode_to_keyval_lower(x) (isshift(x) ? gdk_unicode_to_keyval (tolower(x)) : gdk_unicode_to_keyval (x))
+
+/* all upper case alpha chars are converted to lower case, and the shift
+ * modifier is set to true so that S-A is the same as S-a */
+
 namespace Astroid {
 
   /* Keybindings {{{ */
@@ -348,7 +357,7 @@ namespace Astroid {
       }
 
       if (k.unbound) {
-        log << info << "key: binding unbound target: " << k.name << endl;
+        log << info << "key: binding unbound target: " << name << " to: " << k.str () << endl;
         k.unbound = false;
       }
     }
@@ -579,9 +588,10 @@ namespace Astroid {
     if (spec_parts.size () == 1) {
       ctrl = false;
       meta = false;
-      shift = false;
 
       key = get_keyval (spec_parts[0]);
+      shift = false || isshift_g (key);
+      key = tolower_g (key);
 
       return;
     }
@@ -600,6 +610,10 @@ namespace Astroid {
 
       if (spec_parts.size () == 2) {
         key = get_keyval (spec_parts[1]);
+
+        shift |= isshift_g (key);
+        key = tolower_g (key);
+
         return;
       }
     }
@@ -635,23 +649,26 @@ namespace Astroid {
       }
 
       key = get_keyval (spec_parts[2]);
+
+      shift |= isshift_g (key);
+      key = tolower_g (key);
     }
   } // }}}
 
   Key::Key (guint k, ustring _n, ustring _h) {
-    ctrl = false;
-    meta = false;
-    shift = false;
-    key  = k;
-    name = _n;
-    help = _h;
+    ctrl  = false;
+    meta  = false;
+    shift = isshift_g (k);
+    key   = tolower_g (k);
+    name  = _n;
+    help  = _h;
   }
 
   Key::Key (bool _c, bool _m, bool _s, char k, ustring _n, ustring _h) {
     ctrl = _c;
     meta = _m;
-    shift = _s;
-    key  = gdk_unicode_to_keyval(k);
+    shift = _s || isshift (k);
+    key  = unicode_to_keyval_lower (k);
     name = _n;
     help = _h;
   }
@@ -659,8 +676,8 @@ namespace Astroid {
   Key::Key (bool _c, bool _m, bool _s, guint k, ustring _n, ustring _h) {
     ctrl = _c;
     meta = _m;
-    shift = _s;
-    key  = k;
+    shift = _s || isshift (_c);
+    key  = tolower_c(k);
     name = _n;
     help = _h;
   }
@@ -668,8 +685,12 @@ namespace Astroid {
   Key::Key (GdkEventKey *event, ustring _n, ustring _h) {
     ctrl = (event->state & GDK_CONTROL_MASK);
     meta = (event->state & GDK_MOD1_MASK);
-    shift = (event->state & GDK_SHIFT_MASK);
+
     key  = event->keyval;
+
+    shift = (event->state & GDK_SHIFT_MASK) && isshift_g(key);
+    key = tolower_g(key);
+
     name = _n;
     help = _h;
   }
