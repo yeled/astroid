@@ -1526,7 +1526,7 @@ namespace Astroid {
       "id", e.element_id().c_str(),
       (err = NULL, &err));
 
-    ustring content = ustring::compose ("Alternative part (type: %1) - potentially sketchy.",
+    ustring content = ustring::compose ("Alternative part (type: %1)",
         Glib::Markup::escape_text(sibling->get_content_type ()),
         e.element_id ());
 
@@ -2117,7 +2117,7 @@ namespace Astroid {
         "id", e.element_id().c_str(),
         (err = NULL, &err));
 
-      ustring content = ustring::compose ("MIME message (subject: %1, size: %2 B) - potentially sketchy.",
+      ustring content = ustring::compose ("MIME message (subject: %1, size: %2 B)",
           Glib::Markup::escape_text(c->get_filename ()),
           c->get_file_size (),
           e.element_id ());
@@ -4385,4 +4385,3 @@ namespace Astroid {
 
   /*  */
 }
-
